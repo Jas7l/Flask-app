@@ -1,0 +1,5 @@
+pydantic_settings
+sqlalchemy
+Flask
+flask-login
+bcrypt
