@@ -7,4 +7,4 @@ class PrintUser(BaseModel):
     active: bool
 
     class Config:
-        orm_mod = True
+        from_attributes = True

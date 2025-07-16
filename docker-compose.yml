@@ -13,6 +13,22 @@ services:
     networks:
       - backend-network
 
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@mail.ru
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - db
+    networks:
+      - backend-network
+
+
   backend:
     build:
       context: ./backend
@@ -37,6 +53,8 @@ services:
 
 volumes:
   postgres-data:
+  pgadmin-data:
+
 networks:
   backend-network:
     driver: bridge
