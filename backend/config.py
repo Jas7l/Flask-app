@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     POSTGRES_HOST: str
     POSTGRES_PORT: str
 
+    SECRET_KEY: str
+
     DEBUG: bool = True
 
     @property
