@@ -21,3 +21,19 @@ def logout():
 @login_required
 def user_info():
     return UserManager.user_info()
+
+
+@user_bp.route("/register", methods=["POST"])
+def register():
+    return UserManager.register()
+
+
+@user_bp.route("/update/<int:orbis_id>", methods=["PATCH"])
+def update_user(orbis_id):
+    return UserManager.update_user(orbis_id)
+
+
+@user_bp.route("/delete/<int:orbis_id>", methods=["DELETE"])
+def set_user_inactive(orbis_id):
+    return UserManager.set_user_inactive(orbis_id)
+
