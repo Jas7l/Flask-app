@@ -22,16 +22,11 @@ class UserManager:
                 return JsonifyErrors.inactive_user()
 
             if not user or not bcrypt.checkpw(password_input.encode(), user.password):
-                return jsonify({
-                    "error": "error|warning|notice",
-                    "code": HTTPStatus.BAD_REQUEST,
-                    "message": "Missing login or password",
-                    "data": {}})
+                return JsonifyErrors.missing_login_pas()
 
             login_user(user)
-            return jsonify({"error": None,
-                            "message": "Login successful",
-                           "code": HTTPStatus.OK})
+            return jsonify({"message": "Login successful",
+                           "code": HTTPStatus.OK}), HTTPStatus.OK
 
     @staticmethod
     def register():
@@ -70,22 +65,18 @@ class UserManager:
     @staticmethod
     def logout():
         if not current_user.is_authenticated:
-            return JsonifyErrors.unauthorized_loggout()
+            return JsonifyErrors.unauthorized_logout()
         logout_user()
         return jsonify({
-            "error": None,
             "message": "Logged out",
-            "code": HTTPStatus.OK,
-            "data": {}})
+            "code": HTTPStatus.OK}), HTTPStatus.OK
 
     @staticmethod
     def user_info():
         input_id = int(current_user.orbis_id)
         result = UserManager.user_info_by_id(input_id)
         if not result:
-            return jsonify({
-                "id": "1000",
-                "fields": {}})
+            return JsonifyErrors.invalid_user_info()
         return jsonify(result), HTTPStatus.OK
 
     @staticmethod
@@ -131,7 +122,7 @@ class UserManager:
             user_info = UserManager.user_info_by_id(user.orbis_id)
 
             if not user_info:
-                return JsonifyErrors.user_not_exist()
+                return JsonifyErrors.invalid_user_info()
             return jsonify(user_info), HTTPStatus.OK
 
     @staticmethod
@@ -144,5 +135,4 @@ class UserManager:
             user.active = False
 
             db.commit()
-            return jsonify({"message": "True"})
-
+            return jsonify(True), HTTPStatus.OK
