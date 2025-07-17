@@ -108,13 +108,23 @@ class UserManager:
             if not user:
                 return JsonifyErrors.user_not_exist()
 
-            if "login" in fields:
-                user.login = fields["login"]
-            if "password" in fields:
-                hashed_password = bcrypt.hashpw(fields["password"].encode("utf-8"), bcrypt.gensalt())
-                user.password = hashed_password
-            if "active" in fields:
-                user.active = fields["active"]
+            login = fields.get("login")
+            if login is not None:
+                if not isinstance(login, str):
+                    return JsonifyErrors.incorrect_login()
+                user.login = login
+
+            password = fields.get("password")
+            if password is not None:
+                if not isinstance(password, str):
+                    return JsonifyErrors.incorrect_password()
+                user.password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+
+            active = fields.get("active")
+            if active is not None:
+                if not isinstance(active, bool):
+                    return JsonifyErrors.incorrect_active()
+                user.active = active
 
             db.add(user)
             db.commit()

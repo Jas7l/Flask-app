@@ -74,3 +74,33 @@ class JsonifyErrors:
                         "login": "required",
                         "password": "required"
                     }}), HTTPStatus.BAD_REQUEST
+
+    @staticmethod
+    def incorrect_login():
+        return jsonify({
+                    "error": "error|warning|notice",
+                    "code": HTTPStatus.BAD_REQUEST,
+                    "message": "Login must be a string",
+                    "data": {
+                        "login": "str"
+                    }}), HTTPStatus.BAD_REQUEST
+
+    @staticmethod
+    def incorrect_password():
+        return jsonify({
+                    "error": "error|warning|notice",
+                    "code": HTTPStatus.BAD_REQUEST,
+                    "message": "Password must be a string",
+                    "data": {
+                        "password": "str"
+                    }}), HTTPStatus.BAD_REQUEST
+
+    @staticmethod
+    def incorrect_active():
+        return jsonify({
+                    "error": "error|warning|notice",
+                    "code": HTTPStatus.BAD_REQUEST,
+                    "message": "Active must be a boolean",
+                    "data": {
+                        "active": "bool"
+                    }}), HTTPStatus.BAD_REQUEST
