@@ -9,8 +9,16 @@ class Settings(BaseSettings):
     POSTGRES_PORT: str
 
     SECRET_KEY: str
-
     DEBUG: bool = True
+
+    MAIL_SERVER: str
+    MAIL_PORT: int
+    MAIL_USE_TLS: bool
+    MAIL_USE_SSL: bool
+    MAIL_USERNAME: str
+    MAIL_PASSWORD: str
+    MAIL_DEFAULT_SENDER: str
+    MAIL_SUPPRESS_SEND: bool
 
     @property
     def database_url(self):
