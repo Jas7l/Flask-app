@@ -1,10 +1,15 @@
-from flask import request, jsonify
+from flask import request, jsonify, render_template
 from flask_login import login_user, logout_user, current_user
 from http import HTTPStatus
 from sqlalchemy import Table, MetaData, select
+from flask_mail import Message
+from smtplib import SMTPException
+import json
+
 from ..models.user import User
 from .custom_jsonify_errors import JsonifyErrors
 from ..database import get_db
+from ..extension import mail
 import bcrypt
 
 
@@ -146,3 +151,50 @@ class UserManager:
 
             db.commit()
             return jsonify(True), HTTPStatus.OK
+
+    @staticmethod
+    def send_email():
+        raw_fields = request.form.get("fields", {})
+        fields = json.loads(raw_fields)
+        file = request.files.get("attachment")
+        user = current_user.login
+
+        subject = fields.get("subject")
+        recipients = fields.get("recipients")
+        month = fields.get("month")
+        year = fields.get("year")
+        worked_days = fields.get("worked_days")
+
+        if not subject or not recipients or not month or not year or not worked_days:
+            return jsonify(
+                {"error": "subject, recipients, month, year, worked_days are required"}), HTTPStatus.BAD_REQUEST
+
+        if not isinstance(recipients, list):
+            return jsonify({"error": "recipients must contain at least one email"}), HTTPStatus.BAD_REQUEST
+
+        try:
+            html_content = render_template(
+                "report.html",
+                month=month,
+                year=year,
+                worked_days=worked_days
+            )
+            msg = Message(
+                subject=subject,
+                recipients=recipients,
+                html=html_content,
+                reply_to=f"{user}@example.com"
+            )
+
+            if file:
+                msg.attach(
+                    filename=file.filename,
+                    content_type=file.content_type,
+                    data=file.read()
+                )
+
+            mail.send(msg)
+            return jsonify(True)
+
+        except SMTPException as e:
+            return jsonify({"error": "failed to send email", "data": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR

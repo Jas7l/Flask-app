@@ -37,3 +37,8 @@ def update_user(orbis_id):
 def set_user_inactive(orbis_id):
     return UserManager.set_user_inactive(orbis_id)
 
+
+@user_bp.route("email", methods=["POST"])
+@login_required
+def send_email():
+    return UserManager.send_email()
