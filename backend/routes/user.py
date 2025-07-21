@@ -17,15 +17,15 @@ def logout():
     return UserManager.logout()
 
 
+@user_bp.route("/register", methods=["POST"])
+def register():
+    return UserManager.register()
+
+
 @user_bp.route("/info", methods=["GET"])
 @login_required
 def user_info():
     return UserManager.user_info()
-
-
-@user_bp.route("/register", methods=["POST"])
-def register():
-    return UserManager.register()
 
 
 @user_bp.route("/update/<int:orbis_id>", methods=["PATCH"])
@@ -38,7 +38,7 @@ def set_user_inactive(orbis_id):
     return UserManager.set_user_inactive(orbis_id)
 
 
-@user_bp.route("email", methods=["POST"])
+@user_bp.route("/email", methods=["POST"])
 @login_required
 def send_email():
     return UserManager.send_email()
